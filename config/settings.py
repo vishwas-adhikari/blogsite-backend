@@ -1,16 +1,20 @@
-import os
-from pathlib import Path
-from decouple import config
-import os
-print("[DEBUG] Current working dir:", os.getcwd())
-print("[DEBUG] ENV VARS:", os.environ)
-from decouple import Config, RepositoryEnv
-from pathlib import Path
+# backend/config/settings.py
 
+import os
+from pathlib import Path
+from decouple import config # <-- Keep this simple import
+import dj_database_url
+
+# This BASE_DIR is correct
 BASE_DIR = Path(__file__).resolve().parent.parent
-ENV_FILE = BASE_DIR / '.env'
 
-config = Config(RepositoryEnv(str(ENV_FILE)))
+# These simple config calls are all you need.
+# On your local machine, they will read from .env.
+# On Render, they will read from the Environment Variables you set.
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
+
+# ... the rest of your settings.py file is correct ...
 
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', cast=bool)
