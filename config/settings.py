@@ -1,3 +1,5 @@
+# backend/config/settings.py
+
 import os
 from pathlib import Path
 from decouple import config
@@ -8,12 +10,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
+
 # --- 2. PRODUCTION & SECURITY SETTINGS ---
 # This automatically handles your Render URL and allows localhost for development
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 RENDER_EXTERNAL_HOSTNAME = config('RENDER_EXTERNAL_HOSTNAME', default=None)
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
 
 # --- 3. APPLICATION DEFINITION ---
 INSTALLED_APPS = [
@@ -28,12 +32,15 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'ckeditor',
     'ckeditor_uploader',
+    'cloudinary_storage',
+    'cloudinary',
 ]
+
 
 # --- 4. MIDDLEWARE CONFIGURATION ---
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # For serving static files in production
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -42,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 # --- 5. CORE DJANGO SETTINGS ---
 ROOT_URLCONF = 'config.urls'
@@ -62,14 +70,15 @@ TEMPLATES = [
 ]
 WSGI_APPLICATION = 'config.wsgi.application'
 
+
 # --- 6. DATABASE CONFIGURATION ---
-# This will use your DATABASE_URL on Render and your local db.sqlite3 by default
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///db.sqlite3',
         conn_max_age=600
     )
 }
+
 
 # --- 7. PASSWORD VALIDATION ---
 AUTH_PASSWORD_VALIDATORS = [
@@ -79,39 +88,50 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+
 # --- 8. INTERNATIONALIZATION ---
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# --- 9. STATIC & MEDIA FILES (THE FIX IS HERE) ---
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-STATIC_ROOT = BASE_DIR / 'staticfiles' # This is the crucial line for `collectstatic`
 
-# This is for serving static files in production with WhiteNoise
+# --- 9. STATIC & MEDIA FILES (CLOUDINARY VERSION) ---
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# This configuration tells Django to use WhiteNoise for admin static files
+# and correctly handles local file storage during development.
 STORAGES = {
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
+    "default": { "BACKEND": "django.core.files.storage.FileSystemStorage" },
+    "staticfiles": { "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage" },
 }
+
+# This is the magic line that tells Django to use Cloudinary for any user-uploaded file (media).
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 # --- 10. CORS (CROSS-ORIGIN) SETTINGS ---
-# This allows your frontend to talk to your backend
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
-# This line will automatically add your live Vercel URL once you deploy the frontend
 RENDER_FRONTEND_URL = config('RENDER_FRONTEND_URL', default=None)
 if RENDER_FRONTEND_URL:
     CORS_ALLOWED_ORIGINS.append(RENDER_FRONTEND_URL)
 
-# --- 11. CKEDITOR CONFIGURATION ---
+
+# --- 11. CLOUDINARY CONFIGURATION ---
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': config('CLOUDINARY_API_KEY'),
+    'API_SECRET': config('CLOUDINARY_API_SECRET'),
+}
+
+
+# --- 12. CKEDITOR CONFIGURATION ---
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_CONFIGS = {
     'default': {
