@@ -102,13 +102,14 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # This configuration tells Django to use WhiteNoise for admin static files
 # and correctly handles local file storage during development.
+# This is the magic line that tells Django to use Cloudinary for any user-uploaded file (media).
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 STORAGES = {
-    "default": { "BACKEND": "django.core.files.storage.FileSystemStorage" },
+    #"default": { "BACKEND": "django.core.files.storage.FileSystemStorage" },
     "staticfiles": { "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage" },
 }
 
-# This is the magic line that tells Django to use Cloudinary for any user-uploaded file (media).
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
