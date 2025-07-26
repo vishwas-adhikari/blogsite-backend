@@ -97,19 +97,40 @@ USE_TZ = True
 
 
 # --- 9. STATIC & MEDIA FILES (CLOUDINARY VERSION) ---
+# backend/config/settings.py
+
+# --- 9. STATIC & MEDIA FILES (FINAL PRODUCTION VERSION) ---
+
+# Static files (for the admin panel) are always handled by Django and WhiteNoise
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# This configuration tells Django to use WhiteNoise for admin static files
-# and correctly handles local file storage during development.
-# This is the magic line that tells Django to use Cloudinary for any user-uploaded file (media).
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# Media files (your uploads) configuration depends on the DEBUG state
+if DEBUG:
+    # --- DEVELOPMENT SETTINGS ---
+    # In development (DEBUG=True), store media files on your local computer.
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
+    
+    # Use the standard local file system for both default and static files.
+    STORAGES = {
+        "default": { "BACKEND": "django.core.files.storage.FileSystemStorage" },
+        "staticfiles": { "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage" },
+    }
 
-STORAGES = {
-    "default": { "BACKEND": "django.core.files.storage.FileSystemStorage" },
-    "staticfiles": { "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage" },
-}
-
+else:
+    # --- PRODUCTION SETTINGS ---
+    # In production (DEBUG=False), tell Django to use Cloudinary for all uploaded files.
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    
+    # We do not need MEDIA_URL or MEDIA_ROOT in production, Cloudinary handles them.
+    
+    # This dictionary is now ONLY for static files. The "default" is handled by DEFAULT_FILE_STORAGE.
+    STORAGES = {
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
