@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 from decouple import config
 import dj_database_url
+import cloudinary 
 
 # --- 1. BASE CONFIGURATION ---
 BASE_DIR = Path(__file__).resolve().parent.parent
