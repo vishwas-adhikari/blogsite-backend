@@ -150,8 +150,10 @@ CLOUDINARY_STORAGE = {
 }
 
 
+# backend/config/settings.py
+
 # --- 12. CKEDITOR CONFIGURATION ---
-CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_UPLOAD_PATH = "uploads/" # This tells CKEditor where to temporarily store uploads
 CKEDITOR_CONFIGS = {
     'default': {
         'skin': 'moono-lisa',
@@ -174,6 +176,12 @@ CKEDITOR_CONFIGS = {
         'toolbar': 'YourCustomToolbarConfig',
         'tabSpaces': 4,
         'extraPlugins': ','.join(['uploadimage', 'codesnippet']),
+
+        # --- THESE ARE THE TWO NEW LINES THAT FIX THE PROBLEM ---
+        'filebrowserUploadUrl': "/ckeditor/upload/",
+        'filebrowserBrowseUrl': "/ckeditor/browse/",
+        # --------------------------------------------------------
+        
         'contentsCss': ['http://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/monokai-sublime.min.css'],
         'codeSnippet_theme': 'monokai-sublime',
     }
