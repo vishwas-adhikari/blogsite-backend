@@ -1,0 +1,6 @@
+The Backend is working properly with render 
+The cloudinary is working awesome for media files 
+Everything looks awesome 
+Project is done upto a point !! 
+
+Kudos to development !!
