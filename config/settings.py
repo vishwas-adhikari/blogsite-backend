@@ -11,6 +11,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
+cloudinary.config(
+  cloud_name = config('CLOUDINARY_CLOUD_NAME'),
+  api_key = config('CLOUDINARY_API_KEY'),
+  api_secret = config('CLOUDINARY_API_SECRET'),
+  secure = True
+)
+
 
 # --- 2. PRODUCTION & SECURITY SETTINGS ---
 # This automatically handles your Render URL and allows localhost for development
