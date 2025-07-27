@@ -12,6 +12,7 @@ class BlogPostAdmin(admin.ModelAdmin):
     list_filter = ('tags', 'publication_date')
     search_fields = ('title', 'content')
     prepopulated_fields = {'slug': ('title',)}
+    filter_horizontal = ('tags',)   #fix for tag reuse 
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
