@@ -19,6 +19,7 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'github_link')
     list_filter = ('tags',)
     search_fields = ('title', 'description')
+    filter_horizontal = ('tags',) #fix for tag reuse 
 
 class SocialLinkInline(admin.TabularInline):
     model = SocialLink
