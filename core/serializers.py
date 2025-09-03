@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import Tag, BlogPost, Project, AboutInfo, SocialLink
 from django.utils.html import strip_tags 
+# backend/core/serializers.py
+from .models import Ctf # Add Ctf to your imports
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -48,3 +50,16 @@ class AboutInfoSerializer(serializers.ModelSerializer):
             'id', 'full_name', 'bio', 'profile_image', 'resume', 'experience_years',
             'vulnerabilities_found', 'certifications', 'ctf_teams', 'socials'
         ]
+
+
+
+
+# ... (your other serializers are fine) ...
+
+# --- ADD THIS NEW CLASS ---
+class CtfSerializer(serializers.ModelSerializer):
+    logo = serializers.ImageField(use_url=True)
+
+    class Meta:
+        model = Ctf
+        fields = '__all__' # This will include all fields from the model

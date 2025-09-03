@@ -51,3 +51,26 @@ class SocialLink(models.Model):
 
     def __str__(self):
         return f"{self.platform_name} Link"
+    
+
+# backend/core/models.py
+
+# ... (At the end of the file, after the Subscriber class)
+
+class Ctf(models.Model):
+    event_name = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True, help_text="A URL-friendly version of the event name.")
+    event_date = models.DateField()
+    team_name = models.CharField(max_length=100, blank=True, null=True, help_text="Leave blank for individual.")
+    rank_score = models.CharField(max_length=100, help_text="e.g., '5th / ~50 pts' or 'Top 10%'")
+    logo = models.ImageField(upload_to='ctf_logos/')
+    description = models.TextField(help_text="Detailed description of the event and your takeaways.")
+    proof_link = models.URLField(max_length=300, blank=True, null=True, help_text="Link to certificate, scoreboard, or writeup.")
+    is_featured = models.BooleanField(default=False, help_text="Check this to feature it on the homepage.")
+
+    class Meta:
+        ordering = ['-event_date'] # Show the most recent CTFs first
+
+    def __str__(self):
+        return self.event_name
+    
