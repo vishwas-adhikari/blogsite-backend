@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from ckeditor.fields import RichTextField
 
+
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
@@ -64,7 +65,9 @@ class Ctf(models.Model):
     team_name = models.CharField(max_length=100, blank=True, null=True, help_text="Leave blank for individual.")
     rank_score = models.CharField(max_length=100, help_text="e.g., '5th / ~50 pts' or 'Top 10%'")
     logo = models.ImageField(upload_to='ctf_logos/')
-    description = models.TextField(help_text="Detailed description of the event and your takeaways.")
+    # We are upgrading the description field to use the powerful CKEditor.
+    description = RichTextField(help_text="Detailed description of the event and your takeaways.")
+    
     proof_link = models.URLField(max_length=300, blank=True, null=True, help_text="Link to certificate, scoreboard, or writeup.")
     is_featured = models.BooleanField(default=False, help_text="Check this to feature it on the homepage.")
 
